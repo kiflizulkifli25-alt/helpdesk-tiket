@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard Helpdesk IT SMHS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef8f7;--surface:#fff;--ink:#0c2d2c;--muted:#4f6e6c;--line:#d3e8e6;--line-strong:#bcd8d5;--tosca:#0b7f7b;--tosca-deep:#085e5b;--tosca-bright:#2fc2b9;--tosca-soft:#e2f4f2;--ok:#17784a;--ok-soft:#dff3e8;--warn:#9a5a06;--warn-soft:#fcefd6;--warn-bar:#d98a12;--crit:#b3261e;--crit-soft:#fbe6e4;--neutral:#e6efee;--serif:"Fraunces",Georgia,serif;--sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans)}
+:focus-visible{outline:2px solid var(--tosca-bright);outline-offset:2px}
+.top{background:radial-gradient(120% 140% at 100% 0%,rgba(47,194,185,.4),transparent 60%),var(--tosca-deep);color:#fff}
+.top-in,.wrap{max-width:1180px;margin:0 auto;padding-left:20px;padding-right:20px}
+.top-in{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:16px;padding-bottom:16px}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-size:20px;font-weight:500}
+.brand small{display:block;font:12px var(--sans);opacity:.8}
+.mark{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;border:1px solid rgba(255,255,255,.35);font:600 13px var(--sans)}
+.wrap{padding-top:26px;padding-bottom:56px}
+.banner{max-width:1180px;margin:14px auto 0;padding:10px 16px;border-radius:10px;background:var(--warn-soft);color:var(--warn);font-size:14px;word-break:break-all}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-family:var(--serif);font-weight:500;font-size:30px;margin:0;color:var(--tosca-deep)}
+h2{font-size:15px;font-weight:600;margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.btn{font:inherit;font-weight:600;padding:9px 18px;border-radius:999px;border:1px solid var(--tosca);background:var(--tosca);color:#fff;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--tosca-deep)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.light{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45)}
+.btn.light:hover{background:rgba(255,255,255,.24)}
+.btn.line{background:transparent;color:var(--tosca-deep)}
+.btn.line:hover{background:var(--tosca-soft)}
+.code{font:13px ui-monospace,Menlo,Consolas,monospace;white-space:nowrap;color:var(--tosca-deep)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tile .label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.tile strong{font-family:var(--serif);font-weight:500;font-size:36px;line-height:1.15;color:var(--tosca-deep);font-variant-numeric:tabular-nums}
+.tile .sub{font-size:13px;color:var(--muted)}
+.tile.bad{border-left:4px solid var(--crit)}
+.tile.bad strong{color:var(--crit)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px;min-width:0}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.two-col>.card{margin-bottom:0}
+@media (max-width:760px){.two-col{grid-template-columns:1fr}}
+.alerts{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.alert-row{width:100%;display:flex;align-items:center;gap:12px;flex-wrap:wrap;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer}
+.alert-row:hover{border-color:var(--crit)}
+.grow{flex:1;min-width:160px;font-weight:500}
+.empty{color:var(--muted);padding:10px 0}
+.stack-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;background:var(--neutral);gap:2px;margin-bottom:12px}
+.seg{display:block;min-width:0}
+.seg-baru{background:var(--tosca)}
+.seg-proses{background:var(--warn-bar)}
+.seg-tunggu{background:#8a9b99}
+.seg-selesai{background:var(--ok)}
+.seg-empty{background:var(--neutral)}
+.legend{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size:14px}
+.legend li{display:flex;align-items:center;gap:8px}
+.legend strong{margin-left:auto;font-variant-numeric:tabular-nums}
+.dot{width:10px;height:10px;border-radius:3px;flex:none}
+.bars{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.bars li{display:grid;grid-template-columns:minmax(120px,190px) 1fr 28px;align-items:center;gap:10px;font-size:14px}
+.bars strong{text-align:right;font-variant-numeric:tabular-nums}
+.track{height:8px;background:var(--neutral);border-radius:4px;overflow:hidden}
+.fill{display:block;height:100%;background:linear-gradient(90deg,var(--tosca-bright),var(--tosca));border-radius:4px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.toolbar input{flex:1 1 240px;width:auto}
+.toolbar select{flex:0 1 180px;width:auto}
+input,select,textarea{font:inherit;color:var(--ink);background:#fbfefe;border:1px solid var(--line-strong);border-radius:10px;padding:9px 12px;width:100%;min-width:0}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--tosca);box-shadow:0 0 0 3px rgba(11,127,123,.18)}
+textarea{resize:vertical}
+.table-wrap{overflow-x:auto;margin:0 -20px;padding:0 20px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line-strong);white-space:nowrap}
+td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr[data-open]{cursor:pointer}
+tbody tr[data-open]:hover td{background:#f3faf9}
+td.over{color:var(--crit);font-weight:600;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap;background:var(--neutral)}
+.st-baru{background:var(--tosca-soft);color:var(--tosca-deep)}
+.st-proses{background:var(--warn-soft);color:var(--warn)}
+.st-tunggu{background:var(--neutral);color:#3d5452}
+.st-selesai{background:var(--ok-soft);color:var(--ok)}
+.pr-kritis{background:var(--crit-soft);color:var(--crit)}
+.pr-tinggi{background:var(--warn-soft);color:var(--warn)}
+.pr-sedang{background:var(--tosca-soft);color:var(--tosca-deep)}
+.pr-rendah{background:var(--neutral);color:#3d5452}
+.gate{max-width:440px;margin:40px auto}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:13px;font-weight:600;color:var(--tosca-deep)}
+.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px}
+.msg{font-size:13px;margin:0}
+.msg.err{color:var(--crit)}
+dialog{border:0;border-radius:16px;padding:0;width:min(640px,94vw);max-height:90vh;color:var(--ink);background:var(--surface);box-shadow:0 24px 60px rgba(6,40,39,.3)}
+dialog::backdrop{background:rgba(6,40,39,.45)}
+.dlg{padding:22px 24px;display:grid;gap:14px;margin:0}
+.dlg-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.dlg-head h2{font-family:var(--serif);font-weight:500;font-size:22px;margin-top:4px;color:var(--tosca-deep)}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;margin:0}
+.info dt{font-size:12px;color:var(--muted)}
+.info dd{margin:0;font-size:14px;overflow-wrap:anywhere}
+.desk{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:12px 14px;margin:6px 0 0;font-size:14px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.grid-2 .full{grid-column:1/-1}
+@media (max-width:560px){.grid-2,.info{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">IT</span>
+      <div>Helpdesk IT SMHS<small>Dashboard tim IT</small></div>
+    </div>
+    <div class="row">
+      <button class="btn light" id="btn-link" type="button">Salin link untuk user</button>
+      <button class="btn light" id="btn-keluar" type="button" hidden>Keluar</button>
+    </div>
+  </div>
+</header>
+<p id="banner" class="banner" hidden></p>
+
+<main class="wrap">
+  <section id="gate" class="card gate" hidden>
+    <h2>Masuk ke dashboard</h2>
+    <p class="muted small">Masukkan kunci dashboard dari admin. Kunci disimpan di browser ini.</p>
+    <form id="gate-form">
+      <div class="field">
+        <label for="gate-key">Kunci dashboard</label>
+        <input id="gate-key" type="password" required autocomplete="current-password">
+      </div>
+      <div class="actions">
+        <button class="btn" type="submit">Masuk</button>
+        <span id="gate-msg" class="msg err"></span>
+      </div>
+    </form>
+  </section>
+
+  <div id="app" hidden>
+    <div class="head">
+      <div>
+        <h1>Dashboard tiket</h1>
+        <p class="muted small" id="updated">Memuat…</p>
+      </div>
+      <button class="btn line" id="btn-refresh" type="button">Perbarui</button>
+    </div>
+
+    <section class="tiles" id="tiles"></section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Perlu perhatian</h2>
+        <span class="muted small">Tiket terbuka yang lewat target SLA</span>
+      </div>
+      <ul class="alerts" id="alerts"></ul>
+    </section>
+
+    <div class="two-col">
+      <section class="card">
+        <div class="card-head"><h2>Status tiket</h2></div>
+        <div class="stack-bar" id="status-bar"></div>
+        <ul class="legend" id="status-legend"></ul>
+      </section>
+      <section class="card">
+        <div class="card-head">
+          <h2>Kategori</h2>
+          <span class="muted small">Semua tiket</span>
+        </div>
+        <ul class="bars" id="kategori"></ul>
+      </section>
+    </div>
+
+    <section class="card">
+      <div class="card-head"><h2>Semua tiket</h2></div>
+      <div class="toolbar">
+        <input type="search" id="f-q" placeholder="Cari kode, judul, atau nama" aria-label="Cari tiket">
+        <select id="f-status" aria-label="Filter status"><option value="">Semua status</option></select>
+        <select id="f-prio" aria-label="Filter prioritas"><option value="">Semua prioritas</option></select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Kode</th><th>Judul</th><th>Nama</th><th>Prioritas</th><th>Status</th><th>Umur</th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+    <p class="small muted">Target SLA: Kritis 4 jam, Tinggi 8 jam, Sedang 24 jam, Rendah 72 jam. Tiket "Menunggu user" tidak dihitung lewat SLA. Data diperbarui otomatis setiap 60 detik.</p>
+  </div>
+</main>
+
+<dialog id="dlg" aria-labelledby="dlg-judul">
+  <form id="dlg-form" class="dlg">
+    <div class="dlg-head">
+      <div>
+        <span class="code" id="dlg-kode"></span>
+        <h2 id="dlg-judul"></h2>
+      </div>
+      <button class="btn line" id="dlg-close" type="button">Tutup</button>
+    </div>
+    <div id="dlg-prio"></div>
+    <dl class="info" id="dlg-info"></dl>
+    <div>
+      <span class="small muted">Deskripsi</span>
+      <p class="desk" id="dlg-desk"></p>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label for="dlg-status">Status</label>
+        <select id="dlg-status"></select>
+      </div>
+      <div class="field">
+        <label for="dlg-tugas">Ditangani oleh</label>
+        <input id="dlg-tugas" maxlength="80" placeholder="Nama teknisi">
+      </div>
+      <div class="field full">
+        <label for="dlg-catatan">Catatan IT</label>
+        <textarea id="dlg-catatan" rows="3" maxlength="1000"></textarea>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn" id="dlg-save" type="submit">Simpan perubahan</button>
+      <span id="dlg-msg" class="msg err"></span>
+    </div>
+  </form>
+</dialog>
+
+<script>
+// Isi dengan alamat Web App dari Google Apps Script (sama dengan di index.html).
+const API_URL = "PASTE_URL_APPS_SCRIPT_DI_SINI";
+const KEY = "helpdesk-smhs-key";
+
+const KATEGORI = ["Hardware / perangkat", "Software / aplikasi", "Jaringan / internet", "Email & kolaborasi", "Akun & password", "Printer & scanner", "Lainnya"];
+const PRIO_NAMA = ["Kritis", "Tinggi", "Sedang", "Rendah"];
+const STATUS = ["Baru", "Diproses", "Menunggu user", "Selesai"];
+const TERBUKA = ["Baru", "Diproses", "Menunggu user"];
+const SLA = { Kritis: 4, Tinggi: 8, Sedang: 24, Rendah: 72 };
+const SEG = { "Baru": "seg-baru", "Diproses": "seg-proses", "Menunggu user": "seg-tunggu", "Selesai": "seg-selesai" };
+const PILL_ST = { "Baru": "st-baru", "Diproses": "st-proses", "Menunggu user": "st-tunggu", "Selesai": "st-selesai" };
+const PILL_PR = { "Kritis": "pr-kritis", "Tinggi": "pr-tinggi", "Sedang": "pr-sedang", "Rendah": "pr-rendah" };
+
+const state = { key: "", tickets: [], selectedId: null };
+
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const ms = (iso) => new Date(iso).getTime();
+const jamSejak = (iso) => (Date.now() - ms(iso)) / 3600000;
+const selesaiJam = (t) => (ms(t.selesaiAt) - ms(t.createdAt)) / 3600000;
+const slaJam = (p) => SLA[p] || 24;
+const terbuka = (t) => TERBUKA.includes(t.status);
+const lewatSla = (t) => (t.status === "Baru" || t.status === "Diproses") && jamSejak(t.createdAt) > slaJam(t.prioritas);
+const pill = (teks, kelas) => `<span class="pill ${kelas || ""}">${esc(teks)}</span>`;
+const fmtWaktu = (iso) => iso ? new Date(iso).toLocaleString("id-ID", { timeZone: "Asia/Jakarta", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "-";
+function fmtJam(j) {
+  if (!isFinite(j) || j < 0) j = 0;
+  if (j < 1) return Math.max(1, Math.round(j * 60)) + " menit";
+  if (j < 10) return j.toFixed(1) + " jam";
+  if (j < 48) return Math.round(j) + " jam";
+  return Math.round(j / 24) + " hari";
+}
+function setMsg(sel, teks, jenis = "") { const el = $(sel); el.textContent = teks; el.className = "msg " + jenis; }
+function banner(teks) { const b = $("#banner"); b.textContent = teks || ""; b.hidden = !teks; }
+function isi(sel, daftar) {
+  $(sel).insertAdjacentHTML("beforeend", daftar.map((x) => `<option value="${esc(x)}">${esc(x)}</option>`).join(""));
+}
+
+async function ambil(params) {
+  const q = new URLSearchParams({ key: state.key, ...params });
+  const res = await fetch(`${API_URL}?${q}`);
+  return res.json();
+}
+async function kirim(body) {
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ ...body, key: state.key })
+  });
+  return res.json();
+}
+
+function tampilkanGerbang(pesan = "") {
+  $("#gate").hidden = false;
+  $("#app").hidden = true;
+  $("#btn-keluar").hidden = true;
+  $("#gate-msg").textContent = pesan;
+}
+function tampilkanAplikasi() {
+  $("#gate").hidden = true;
+  $("#app").hidden = false;
+  $("#btn-keluar").hidden = false;
+}
+function keluar(pesan = "") {
+  state.key = "";
+  try { localStorage.removeItem(KEY); } catch (_) {}
+  state.tickets = [];
+  tampilkanGerbang(pesan);
+}
+
+async function muat() {
+  if (API_URL.startsWith("PASTE")) return banner("Alamat layanan belum diatur di dashboard.html.");
+  if (!state.key) return tampilkanGerbang();
+  try {
+    const j = await ambil({ action: "list" });
+    if (!j.ok) {
+      if (/kunci/i.test(j.error || "")) return keluar("Kunci dashboard salah. Coba lagi.");
+      throw new Error(j.error);
+    }
+    state.tickets = j.tickets;
+    tampilkanAplikasi();
+    banner("");
+    render();
+    $("#updated").textContent = "Diperbarui " + new Date().toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" }) + " WIB";
+  } catch (err) {
+    banner("Data belum bisa dimuat. Periksa koneksi, lalu tekan Perbarui.");
+  }
+}
+
+function tile(label, nilai, sub, kelas = "") {
+  return `<div class="tile ${kelas}"><span class="label">${esc(label)}</span><strong>${esc(nilai)}</strong><span class="sub">${esc(sub)}</span></div>`;
+}
+
+function render() {
+  const T = state.tickets;
+  const lewat = T.filter(lewatSla).sort((a, b) => jamSejak(b.createdAt) - jamSejak(a.createdAt));
+  const selesai = T.filter((t) => t.status === "Selesai" && t.selesaiAt);
+  const rata = selesai.length ? selesai.reduce((s, t) => s + selesaiJam(t), 0) / selesai.length : null;
+
+  $("#tiles").innerHTML = [
+    tile("Total tiket", T.length, `${T.filter((t) => t.status === "Selesai").length} sudah selesai`),
+    tile("Masih terbuka", T.filter(terbuka).length, `${T.filter((t) => t.status === "Baru").length} belum ditangani`),
+    tile("Lewat SLA", lewat.length, lewat.length ? "Perlu ditangani segera" : "Semua masih dalam target", lewat.length ? "bad" : ""),
+    tile("Rata-rata selesai", rata === null ? "–" : fmtJam(rata), selesai.length ? `dari ${selesai.length} tiket` : "Belum ada tiket selesai")
+  ].join("");
+
+  $("#alerts").innerHTML = lewat.length
+    ? lewat.slice(0, 6).map((t) => `<li><button type="button" class="alert-row" data-open="${esc(t.id)}"><span class="code">${esc(t.kode)}</span><span class="grow">${esc(t.judul)}</span>${pill(t.prioritas, PILL_PR[t.prioritas])}<span class="muted small">${esc(fmtJam(jamSejak(t.createdAt)))} · target ${slaJam(t.prioritas)} jam</span></button></li>`).join("")
+    : `<li class="empty">Tidak ada tiket yang lewat SLA.</li>`;
+
+  const hitung = STATUS.map((s) => ({ s, n: T.filter((t) => t.status === s).length }));
+  $("#status-bar").innerHTML = T.length
+    ? hitung.filter((x) => x.n).map((x) => `<span class="seg ${SEG[x.s]}" style="flex:${x.n}" title="${esc(x.s)}: ${x.n}"></span>`).join("")
+    : `<span class="seg seg-empty" style="flex:1"></span>`;
+  $("#status-legend").innerHTML = hitung.map((x) => `<li><span class="dot ${SEG[x.s]}"></span>${esc(x.s)}<strong>${x.n}</strong></li>`).join("");
+
+  const kat = KATEGORI.map((k) => ({ k, n: T.filter((t) => t.kategori === k).length })).sort((a, b) => b.n - a.n);
+  const maks = Math.max(1, ...kat.map((x) => x.n));
+  $("#kategori").innerHTML = kat.map((x) => `<li><span>${esc(x.k)}</span><span class="track"><span class="fill" style="width:${(x.n / maks * 100).toFixed(1)}%"></span></span><strong>${x.n}</strong></li>`).join("");
+
+  renderTable();
+}
+
+function renderTable() {
+  const q = $("#f-q").value.trim().toLowerCase();
+  const st = $("#f-status").value;
+  const pr = $("#f-prio").value;
+  const baris = state.tickets
+    .filter((t) => (!st || t.status === st) && (!pr || t.prioritas === pr))
+    .filter((t) => !q || [t.kode, t.judul, t.nama, t.kategori].some((v) => String(v || "").toLowerCase().includes(q)))
+    .sort((a, b) => ms(b.createdAt) - ms(a.createdAt));
+
+  $("#rows").innerHTML = baris.length ? baris.map((t) => {
+    const over = lewatSla(t);
+    const umur = t.status === "Selesai" && t.selesaiAt ? "selesai dalam " + fmtJam(selesaiJam(t)) : fmtJam(jamSejak(t.createdAt)) + " lalu";
+    return `<tr data-open="${esc(t.id)}" tabindex="0">
+      <td class="code">${esc(t.kode)}</td>
+      <td><div>${esc(t.judul)}</div><div class="muted small">${esc(t.kategori)}</div></td>
+      <td>${esc(t.nama)}<div class="muted small">${esc(t.departemen)}</div></td>
+      <td>${pill(t.prioritas, PILL_PR[t.prioritas])}</td>
+      <td>${pill(t.status, PILL_ST[t.status])}</td>
+      <td class="${over ? "over" : ""}">${esc(umur)}${over ? '<div class="small">Lewat SLA</div>' : ""}</td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="6" class="empty">${state.tickets.length ? "Tidak ada tiket yang cocok." : "Belum ada tiket masuk."}</td></tr>`;
+}
+
+function openDetail(id) {
+  const t = state.tickets.find((x) => x.id === id);
+  if (!t) return;
+  state.selectedId = id;
+  $("#dlg-kode").textContent = t.kode;
+  $("#dlg-judul").textContent = t.judul || "";
+  $("#dlg-prio").innerHTML = pill(t.prioritas, PILL_PR[t.prioritas]) + ` <span class="muted small">target ${slaJam(t.prioritas)} jam</span>`;
+  $("#dlg-info").innerHTML = [
+    ["Nama", t.nama], ["Departemen", t.departemen], ["Kategori", t.kategori], ["Dibuat", fmtWaktu(t.createdAt)]
+  ].map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v || "-")}</dd></div>`).join("");
+  $("#dlg-desk").textContent = t.deskripsi || "-";
+  $("#dlg-status").value = t.status;
+  $("#dlg-tugas").value = t.ditugaskan || "";
+  $("#dlg-catatan").value = t.catatanIT || "";
+  setMsg("#dlg-msg", "");
+  $("#dlg").showModal();
+}
+
+async function simpan(e) {
+  e.preventDefault();
+  const btn = $("#dlg-save");
+  btn.disabled = true;
+  try {
+    const j = await kirim({
+      action: "update",
+      id: state.selectedId,
+      status: $("#dlg-status").value,
+      ditugaskan: $("#dlg-tugas").value.trim(),
+      catatanIT: $("#dlg-catatan").value.trim()
+    });
+    if (!j.ok) throw new Error(j.error);
+    $("#dlg").close();
+    await muat();
+  } catch (err) {
+    setMsg("#dlg-msg", "Perubahan belum tersimpan: " + err.message, "err");
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function init() {
+  isi("#f-status", STATUS);
+  isi("#f-prio", PRIO_NAMA);
+  isi("#dlg-status", STATUS);
+
+  try { state.key = localStorage.getItem(KEY) || ""; } catch (_) {}
+
+  $("#gate-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    state.key = $("#gate-key").value.trim();
+    try { localStorage.setItem(KEY, state.key); } catch (_) {}
+    $("#gate-key").value = "";
+    muat();
+  });
+  $("#btn-keluar").addEventListener("click", () => keluar(""));
+  $("#btn-refresh").addEventListener("click", muat);
+  $("#btn-link").addEventListener("click", async () => {
+    const url = new URL("index.html", location.href).href;
+    try {
+      await navigator.clipboard.writeText(url);
+      banner("Link untuk user sudah disalin: " + url);
+    } catch (err) {
+      banner("Link untuk user: " + url);
+    }
+  });
+
+  $("#f-q").addEventListener("input", renderTable);
+  $("#f-status").addEventListener("change", renderTable);
+  $("#f-prio").addEventListener("change", renderTable);
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest && e.target.closest("[data-open]");
+    if (el) openDetail(el.dataset.open);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" || !e.target.closest) return;
+    const el = e.target.closest("tr[data-open]");
+    if (el) openDetail(el.dataset.open);
+  });
+  $("#dlg-close").addEventListener("click", () => $("#dlg").close());
+  $("#dlg-form").addEventListener("submit", simpan);
+
+  muat();
+  setInterval(() => { if (state.key) muat(); }, 60000);
+}
+
+init();
+</script>
+</body>
+</html>
