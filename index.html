@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kirim Tiket IT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Palet: tosca yang dalam untuk panel utama, kertas putih untuk formulir, satu aksen cerah untuk detail.
+   Tata letak: dua kolom, panduan di kiri dan formulir di kanan; satu kolom di layar kecil. */
+:root{
+  --mist:#eef8f7;
+  --paper:#ffffff;
+  --ink:#0c2d2c;
+  --tosca-ink:#0a4745;
+  --muted:#4f6e6c;
+  --line:#d3e8e6;
+  --tosca:#0b7f7b;
+  --tosca-deep:#085e5b;
+  --tosca-bright:#2fc2b9;
+  --tosca-soft:#e2f4f2;
+  --danger:#a33a2a;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --sans:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0}
+body{background:var(--mist);color:var(--ink);font:15px/1.6 var(--sans);min-height:100%;padding:32px 16px}
+:focus-visible{outline:2px solid var(--tosca-bright);outline-offset:2px}
+
+.shell{max-width:1040px;margin:0 auto;background:var(--paper);border-radius:20px;overflow:hidden;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);box-shadow:0 1px 0 var(--line),0 24px 48px -28px rgba(8,94,91,.45)}
+
+.intro{color:#eafaf8;padding:44px 40px;background:radial-gradient(120% 80% at 100% 0%,rgba(47,194,185,.45),transparent 60%),var(--tosca-deep)}
+.mark{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.35);font:600 14px var(--sans);letter-spacing:.06em;color:#fff}
+.intro h1{font-family:var(--serif);font-weight:500;font-size:36px;line-height:1.1;letter-spacing:-.01em;margin:26px 0 12px;text-wrap:balance;color:#fff}
+.lead{margin:0 0 28px;color:rgba(234,250,248,.92)}
+.steps{list-style:none;margin:0 0 28px;padding:0;display:grid;gap:14px}
+.steps li{display:flex;align-items:center;gap:12px}
+.steps span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.5);font-size:13px;font-weight:600;flex:none}
+.fine{font-size:13px;color:rgba(234,250,248,.78);margin:0}
+
+.panel{padding:44px 44px 40px;min-width:0}
+.step-title{font-family:var(--serif);font-weight:500;font-size:26px;margin:0 0 6px;color:var(--tosca-ink);letter-spacing:-.01em;text-wrap:balance}
+.muted{color:var(--muted);margin:0 0 4px;font-size:14px}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field label{font-size:13px;font-weight:600;color:var(--tosca-ink)}
+.hint{font-size:12.5px;color:var(--muted)}
+input,select,textarea{font:inherit;color:var(--ink);background:#fbfefe;border:1px solid #bcd8d5;border-radius:10px;padding:10px 12px;width:100%;min-width:0;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--tosca);box-shadow:0 0 0 3px rgba(11,127,123,.18)}
+textarea{resize:vertical}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:24px}
+.btn{display:inline-flex;align-items:center;justify-content:center;font:inherit;font-weight:600;padding:12px 22px;border-radius:999px;border:1px solid var(--tosca);cursor:pointer;text-decoration:none;background:transparent;color:var(--tosca-deep);transition:background .15s,color .15s}
+.btn.primary{background:var(--tosca);color:#fff}
+.btn.primary:hover{background:var(--tosca-deep);border-color:var(--tosca-deep)}
+.btn.secondary:hover{background:var(--tosca-soft)}
+.btn.ghost{border-color:transparent;color:var(--muted);padding-left:6px;padding-right:6px}
+.btn.ghost:hover{color:var(--tosca-deep)}
+.btn.disabled{opacity:.5;pointer-events:none}
+
+.chip{display:inline-block;background:var(--tosca-soft);color:var(--tosca-deep);font-weight:700;letter-spacing:.08em;padding:4px 12px;border-radius:999px;font-variant-numeric:tabular-nums;font-size:14px}
+.ticket-text{white-space:pre-wrap;font:14px/1.65 var(--sans);background:var(--tosca-soft);border-left:3px solid var(--tosca-bright);border-radius:12px;padding:18px 20px;margin:18px 0 0;color:var(--ink);overflow-wrap:anywhere}
+.notice{background:#fdf1e7;color:#7a4a12;border-radius:10px;padding:10px 12px;font-size:14px;margin:14px 0 0}
+.fine-print{font-size:13px;color:var(--muted);margin:16px 0 0}
+.msg{font-size:13px;margin:12px 0 0;min-height:1em}
+.msg.ok{color:var(--tosca-deep)}
+.msg.err{color:var(--danger)}
+
+@media (max-width:820px){
+  .shell{grid-template-columns:1fr}
+  .intro{padding:32px 26px}
+  .panel{padding:30px 26px}
+  .intro h1{font-size:30px}
+}
+@media (max-width:560px){
+  body{padding:16px 10px}
+  .form-grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="intro">
+    <span class="mark" aria-hidden="true">IT</span>
+    <h1>Kirim tiket IT</h1>
+    <p class="lead">Ceritakan kendala Anda. Tiket dikirim ke tim IT lewat WhatsApp, tanpa perlu masuk ke akun.</p>
+    <ol class="steps">
+      <li><span>1</span>Isi formulir singkat</li>
+      <li><span>2</span>Periksa ringkasan tiket</li>
+      <li><span>3</span>Kirim lewat WhatsApp</li>
+    </ol>
+    <p class="fine">Setiap tiket mendapat kode. Simpan kode itu untuk menanyakan status ke tim IT.</p>
+  </aside>
+
+  <main class="panel">
+    <section id="step-form" aria-labelledby="h-form">
+      <h2 id="h-form" class="step-title">Isi formulir</h2>
+      <p class="muted">Semua kolom bertanda wajib diisi kecuali lokasi.</p>
+      <form id="tk-form">
+        <div class="form-grid">
+          <div class="field">
+            <label for="tk-nama">Nama lengkap</label>
+            <input id="tk-nama" name="pemohon" required maxlength="80" autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="tk-kontak">Nomor WhatsApp aktif</label>
+            <input id="tk-kontak" name="kontak" type="tel" required maxlength="20" pattern="[0-9+\- ()]{8,20}" title="Isi nomor telepon yang bisa dihubungi, misalnya 081234567890" autocomplete="tel">
+          </div>
+          <div class="field">
+            <label for="tk-dep">Departemen</label>
+            <select id="tk-dep" name="departemen" required>
+              <option value="" disabled selected>Pilih departemen</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tk-lokasi">Lokasi atau nomor ruangan</label>
+            <input id="tk-lokasi" name="lokasi" maxlength="80" placeholder="Contoh: Lantai 2, ruang 204">
+          </div>
+          <div class="field">
+            <label for="tk-kat">Kategori</label>
+            <select id="tk-kat" name="kategori" required>
+              <option value="" disabled selected>Pilih kategori</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="tk-prio">Prioritas</label>
+            <select id="tk-prio" name="prioritas" required></select>
+            <span class="hint" id="tk-prio-hint"></span>
+          </div>
+          <div class="field full">
+            <label for="tk-judul">Judul singkat</label>
+            <input id="tk-judul" name="judul" required maxlength="120" placeholder="Contoh: Laptop tidak tersambung ke Wi-Fi">
+          </div>
+          <div class="field full">
+            <label for="tk-desk">Ceritakan kendalanya</label>
+            <textarea id="tk-desk" name="deskripsi" rows="5" required maxlength="1000" placeholder="Apa yang terjadi, sejak kapan, dan apa yang sudah Anda coba."></textarea>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" type="submit">Lihat ringkasan</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="step-kirim" aria-labelledby="h-kirim" hidden>
+      <h2 id="h-kirim" class="step-title" tabindex="-1">Periksa ringkasan</h2>
+      <p class="muted">Kode tiket Anda: <span id="kode" class="chip"></span></p>
+      <pre id="ticket-text" class="ticket-text"></pre>
+      <p id="wa-note" class="notice" hidden></p>
+      <div class="actions">
+        <a id="wa-link" class="btn primary" target="_blank" rel="noopener">Kirim lewat WhatsApp</a>
+        <button id="copy-btn" class="btn secondary" type="button">Salin teks</button>
+        <button id="edit-btn" class="btn ghost" type="button">Ubah isian</button>
+      </div>
+      <p id="copy-msg" class="msg" role="status"></p>
+      <p class="fine-print">WhatsApp akan terbuka dengan pesan yang sudah terisi. Tekan kirim di WhatsApp agar tiket benar-benar sampai ke tim IT.</p>
+      <div class="actions">
+        <button id="baru-btn" class="btn ghost" type="button">Buat tiket baru</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+// Isi dengan nomor WhatsApp tim IT: kode negara tanpa tanda plus, lalu nomor tanpa 0 di depan.
+// Contoh: "6281234567890". Selama kosong, tombol kirim dinonaktifkan.
+const WA_NUMBER = "6285398686311";
+
+const DEPARTEMEN = ["Keuangan", "SDM", "Operasional", "Pemasaran", "Penjualan", "Produksi", "Manajemen", "Lainnya"];
+const KATEGORI = ["Hardware / perangkat", "Software / aplikasi", "Jaringan / internet", "Email & kolaborasi", "Akun & password", "Printer & scanner", "Lainnya"];
+const PRIORITAS = [
+  { nama: "Kritis", hint: "Layanan utama terhenti dan banyak orang terdampak. Target respons 4 jam." },
+  { nama: "Tinggi", hint: "Pekerjaan terhambat dan belum ada jalan keluar. Target 8 jam." },
+  { nama: "Sedang", hint: "Ada gangguan, tetapi pekerjaan masih bisa berjalan. Target 24 jam." },
+  { nama: "Rendah", hint: "Permintaan biasa atau pertanyaan. Target 72 jam." }
+];
+
+const state = { kode: "", teks: "" };
+const $ = (s) => document.querySelector(s);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+function isiSelect(sel, daftar, pilihan) {
+  $(sel).insertAdjacentHTML("beforeend", daftar.map((x) => `<option value="${esc(x)}"${x === pilihan ? " selected" : ""}>${esc(x)}</option>`).join(""));
+}
+
+function updatePrioHint() {
+  const p = PRIORITAS.find((x) => x.nama === $("#tk-prio").value);
+  $("#tk-prio-hint").textContent = p ? p.hint : "";
+}
+
+function kodeBaru() {
+  return "INC-" + Date.now().toString(36).slice(-4).toUpperCase() + Math.random().toString(36).slice(2, 4).toUpperCase();
+}
+
+function waktuSekarang() {
+  return new Date().toLocaleString("id-ID", { timeZone: "Asia/Jakarta", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) + " WIB";
+}
+
+function bangunTiket(fd) {
+  const v = (n) => String(fd.get(n) || "").trim();
+  const kode = kodeBaru();
+  const teks = [
+    "*Tiket IT baru*",
+    `Kode: ${kode}`,
+    `Judul: ${v("judul")}`,
+    `Pemohon: ${v("pemohon")} (${v("departemen")})`,
+    `Kontak WhatsApp: ${v("kontak")}`,
+    `Lokasi: ${v("lokasi") || "-"}`,
+    `Kategori: ${v("kategori")}`,
+    `Prioritas: ${v("prioritas")}`,
+    "",
+    "Deskripsi:",
+    v("deskripsi"),
+    "",
+    `Dikirim: ${waktuSekarang()}`
+  ].join("\n");
+  return { kode, teks };
+}
+
+function tampilkanRingkasan(kode, teks) {
+  state.kode = kode;
+  state.teks = teks;
+  $("#kode").textContent = kode;
+  $("#ticket-text").textContent = teks;
+
+  const link = $("#wa-link");
+  const note = $("#wa-note");
+  if (WA_NUMBER) {
+    link.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(teks)}`;
+    link.classList.remove("disabled");
+    link.removeAttribute("aria-disabled");
+    note.hidden = true;
+  } else {
+    link.removeAttribute("href");
+    link.classList.add("disabled");
+    link.setAttribute("aria-disabled", "true");
+    note.textContent = "Nomor WhatsApp tim IT belum diatur. Hubungi admin helpdesk.";
+    note.hidden = false;
+  }
+  setMsg("");
+  $("#step-form").hidden = true;
+  $("#step-kirim").hidden = false;
+  $("#h-kirim").focus();
+}
+
+function setMsg(teks, jenis = "") {
+  const el = $("#copy-msg");
+  el.textContent = teks;
+  el.className = "msg " + jenis;
+}
+
+function tampilkanFormulir() {
+  $("#step-kirim").hidden = true;
+  $("#step-form").hidden = false;
+  $("#h-form").focus();
+}
+
+function init() {
+  isiSelect("#tk-dep", DEPARTEMEN);
+  isiSelect("#tk-kat", KATEGORI);
+  isiSelect("#tk-prio", PRIORITAS.map((p) => p.nama), "Sedang");
+  updatePrioHint();
+
+  $("#tk-prio").addEventListener("change", updatePrioHint);
+
+  $("#tk-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    if (!form.reportValidity()) return;
+    const { kode, teks } = bangunTiket(new FormData(form));
+    tampilkanRingkasan(kode, teks);
+  });
+
+  $("#edit-btn").addEventListener("click", tampilkanFormulir);
+
+  $("#baru-btn").addEventListener("click", () => {
+    $("#tk-form").reset();
+    updatePrioHint();
+    tampilkanFormulir();
+  });
+
+  $("#copy-btn").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(state.teks);
+      setMsg("Teks tiket sudah disalin.", "ok");
+    } catch (err) {
+      setMsg("Tidak bisa menyalin otomatis. Blok teks di atas lalu salin manual.", "err");
+    }
+  });
+}
+
+init();
+</script>
+</body>
+</html>
